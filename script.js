@@ -1,46 +1,32 @@
-const apiUrls = [
-    "https://api.uspeoplesearch.net/tcpa/v1?x=",
-    "https://api.uspeoplesearch.net/tcpa/report?x="
-];
-
 async function checkDNCStatus() {
-    const phoneNumber = document.getElementById("phoneNumber").value;
-    if (!phoneNumber) {
-        alert("Please enter a phone number");
+    const phoneNumber = document.getElementById("phoneNumber").value.trim();
+    const output = document.getElementById("output");
+    const resultDiv = document.getElementById("result");
+
+    if (!isValidPhoneNumber(phoneNumber)) {
+        output.textContent = "❌ Invalid phone number format. Please enter a valid number.";
+        resultDiv.style.display = "block";
         return;
     }
 
-    const resultDiv = document.getElementById("result");
-    const output = document.getElementById("output");
+    output.textContent = "⏳ Checking...";
+    resultDiv.style.display = "block";
     
-    resultDiv.style.display = "none"; // Hide the result div initially
-    output.textContent = "Loading...";
-
     try {
-        const results = await getDNCResults(phoneNumber);
-        output.textContent = JSON.stringify(results, null, 2);
-        resultDiv.style.display = "block"; // Show results
+        const response = await fetch(`https://api.uspeoplesearch.net/tcpa/v1?x=${phoneNumber}`);
+        const data = await response.json();
+        
+        if (data.status === "ok") {
+            output.textContent = `✅ Phone Number: ${data.phone}\nState: ${data.state}\nNDNC: ${data.ndnc}\nSDNC: ${data.sdnc}`;
+        } else {
+            output.textContent = "⚠️ Unable to fetch DNC status. Please try again later.";
+        }
     } catch (error) {
-        output.textContent = "Error: " + error.message;
-        resultDiv.style.display = "block";
+        output.textContent = "❌ Error fetching data. Check your connection and try again.";
     }
 }
 
-async function getDNCResults(phoneNumber) {
-    const results = [];
-
-    for (const url of apiUrls) {
-        try {
-            const response = await fetch(url + phoneNumber);
-            if (!response.ok) {
-                throw new Error("API request failed");
-            }
-            const data = await response.json();
-            results.push(data); // Collect API response data
-        } catch (error) {
-            results.push({ error: error.message });
-        }
-    }
-
-    return results;
+function isValidPhoneNumber(number) {
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    return phoneRegex.test(number);
 }
