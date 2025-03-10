@@ -1,7 +1,5 @@
 const apiUrls = [
     "https://api.uspeoplesearch.net/tcpa/v1?x=",
-    "https://api.uspeoplesearch.net/person/v3?x=",
-    "https://premium_lookup-1-h4761841.deta.app/person?x=",
     "https://api.uspeoplesearch.net/tcpa/report?x="
 ];
 
