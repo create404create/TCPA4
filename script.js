@@ -13,13 +13,18 @@ async function checkDNCStatus() {
     resultDiv.style.display = "block";
     
     try {
-        const response = await fetch(`https://api.uspeoplesearch.net/tcpa/v1?x=${phoneNumber}`);
-        const data = await response.json();
+        const responses = await Promise.all([
+            fetch(`https://api.uspeoplesearch.net/tcpa/v1?x=${phoneNumber}`).then(res => res.json()),
+            fetch(`https://api.uspeoplesearch.net/tcpa/report?x=${phoneNumber}`).then(res => res.json())
+        ]);
         
-        if (data.status === "ok") {
-            output.textContent = `✅ Phone Number: ${data.phone}\nState: ${data.state}\nNDNC: ${data.ndnc}\nSDNC: ${data.sdnc}`;
+        const data1 = responses[0];
+        const data2 = responses[1];
+        
+        if (data1.status === "ok" && data2.status === "ok") {
+            output.textContent = `✅ Phone Number: ${data1.phone}\nState: ${data1.state}\nNDNC: ${data1.ndnc}\nSDNC: ${data1.sdnc}\n\n🔹 Report: ${data2.listed ? "Listed" : "Not Listed"}`;
         } else {
-            output.textContent = "⚠️ Unable to fetch DNC status. Please try again later.";
+            output.textContent = "⚠️ Unable to fetch complete DNC status. Please try again later.";
         }
     } catch (error) {
         output.textContent = "❌ Error fetching data. Check your connection and try again.";
