@@ -1,29 +1,47 @@
-function checkDNCStatus() {
-    const phoneNumber = document.getElementById("phoneNumber").value.trim();
-    const output = document.getElementById("output");
-    const resultDiv = document.getElementById("result");
+SCRIPT
+const apiUrls = [
+    "https://api.uspeoplesearch.net/tcpa/v1?x=",
+    "https://api.uspeoplesearch.net/tcpa/report?x="
+];
 
-    if (!isValidPhoneNumber(phoneNumber)) {
-        output.textContent = "❌ Invalid phone number format. Please enter a valid number.";
-        resultDiv.style.display = "block";
+async function checkDNCStatus() {
+    const phoneNumber = document.getElementById("phoneNumber").value;
+    if (!phoneNumber) {
+        alert("Please enter a phone number");
         return;
     }
 
-    output.textContent = "⏳ Checking...";
-    resultDiv.style.display = "block";
+    const resultDiv = document.getElementById("result");
+    const output = document.getElementById("output");
     
-    setTimeout(() => {
-        const status = getRandomStatus();
-        output.textContent = `✅ Phone Number: ${phoneNumber}\nStatus: ${status}`;
-    }, 2000);
+    resultDiv.style.display = "none"; // Hide the result div initially
+    output.textContent = "Loading...";
+
+    try {
+        const results = await getDNCResults(phoneNumber);
+        output.textContent = JSON.stringify(results, null, 2);
+        resultDiv.style.display = "block"; // Show results
+    } catch (error) {
+        output.textContent = "Error: " + error.message;
+        resultDiv.style.display = "block";
+    }
 }
 
-function isValidPhoneNumber(number) {
-    const phoneRegex = /^\+?[0-9]{10,15}$/;
-    return phoneRegex.test(number);
-}
+async function getDNCResults(phoneNumber) {
+    const results = [];
 
-function getRandomStatus() {
-    const statuses = ["Not in DNC List", "In DNC List", "Pending Verification"];
-    return statuses[Math.floor(Math.random() * statuses.length)];
+    for (const url of apiUrls) {
+        try {
+            const response = await fetch(url + phoneNumber);
+            if (!response.ok) {
+                throw new Error("API request failed");
+            }
+            const data = await response.json();
+            results.push(data); // Collect API response data
+        } catch (error) {
+            results.push({ error: error.message });
+        }
+    }
+
+    return results;
 }
