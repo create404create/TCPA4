@@ -1,4 +1,3 @@
-SCRIPT
 const apiUrls = [
     "https://api.uspeoplesearch.net/tcpa/v1?x=",
     "https://api.uspeoplesearch.net/tcpa/report?x="
