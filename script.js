@@ -10,16 +10,18 @@ async function checkStatus() {
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        console.log("API Response Data:", data);
 
+        console.log("API Response:", data); // Debugging ke liye
+
+        // Show response on the website
         document.getElementById("result").innerHTML = `
-            <p><strong>Status:</strong> ${data.status || "Unknown"}</p>
-            <p><strong>Phone:</strong> ${data.phone || "N/A"}</p>
-            <p><strong>Blacklist:</strong> ${data.listed ?? "Not Available"}</p>
-            <p><strong>Litigator:</strong> ${data.type ?? "Not Available"}</p>
-            <p><strong>State:</strong> ${data.state || "Invalid"}</p>
-            <p><strong>DNC National:</strong> ${data.hasOwnProperty("dnc_national") ? data.dnc_national : "Not Available"}</p>
-            <p><strong>DNC State:</strong> ${data.hasOwnProperty("dnc_state") ? data.dnc_state : "Not Available"}</p>
+            <strong>Status:</strong> ${data.status || "Unknown"} <br>
+            <strong>Phone:</strong> ${data.phone || "N/A"} <br>
+            <strong>Blacklist:</strong> ${data.listed || "Not Available"} <br>
+            <strong>Litigator:</strong> ${data.type || "Not Available"} <br>
+            <strong>State:</strong> ${data.state || "Invalid"} <br>
+            <strong>DNC National:</strong> ${data.ndnc || "Not Available"} <br>
+            <strong>DNC State:</strong> ${data.sdnc || "Not Available"} <br>
         `;
     } catch (error) {
         console.error("API Error:", error);
