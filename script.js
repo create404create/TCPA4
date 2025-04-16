@@ -1,5 +1,5 @@
 async function checkStatus() {
-    const phone = document.getElementById("phoneNumber").value;
+    const phone = document.getElementById("phoneNumber").value.trim();
     if (!phone) {
         alert("Please enter a valid USA number");
         return;
@@ -7,22 +7,19 @@ async function checkStatus() {
 
     const apiUrl = `https://tcpa.api.uspeoplesearch.net/tcpa/v1?x=${phone}`;
 
-    console.log("API Request:", apiUrl); // Debugging ke liye
-
     try {
         const response = await fetch(apiUrl);
-
-        console.log("Raw Response:", response); // Yeh check karega ke response aa bhi raha hai ya nahi
-
         const data = await response.json();
-
-        console.log("API Response Data:", data); // Yeh API ka data dikhayega
+        console.log("API Response Data:", data);
 
         document.getElementById("result").innerHTML = `
-            <p>Blacklist Status: ${data.blacklist_status || "Not Available"}</p>
-            <p>DNC National: ${data.dnc_national || "Not Available"}</p>
-            <p>DNC State: ${data.dnc_state || "Not Available"}</p>
-            <p>Litigator: ${data.litigator || "Not Available"}</p>
+            <p><strong>Status:</strong> ${data.status || "Unknown"}</p>
+            <p><strong>Phone:</strong> ${data.phone || "N/A"}</p>
+            <p><strong>Blacklist:</strong> ${data.listed ?? "Not Available"}</p>
+            <p><strong>Litigator:</strong> ${data.type ?? "Not Available"}</p>
+            <p><strong>State:</strong> ${data.state || "Invalid"}</p>
+            <p><strong>DNC National:</strong> ${data.hasOwnProperty("dnc_national") ? data.dnc_national : "Not Available"}</p>
+            <p><strong>DNC State:</strong> ${data.hasOwnProperty("dnc_state") ? data.dnc_state : "Not Available"}</p>
         `;
     } catch (error) {
         console.error("API Error:", error);
