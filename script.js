@@ -10,34 +10,43 @@ function checkStatus() {
   fetch(apiUrl)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("result").innerHTML = `
-        <p><strong>Status:</strong> ${data.status}</p>
-        <p><strong>Phone:</strong> ${data.phone}</p>
-        <p><strong>Blacklist:</strong> ${data.listed}</p>
-        <p><strong>Litigator:</strong> ${data.type}</p>
-        <p><strong>State:</strong> ${data.state}</p>
-        <p><strong>DNC National:</strong> ${data.ndnc === true ? "Yes" : "No"}</p>
-        <p><strong>DNC State:</strong> ${data.sdnc === true ? "Yes" : "No"}</p>
-      `;
+      const resultBox = document.getElementById("result");
+      resultBox.innerText = `
+Status: ${data.status}
+Phone: ${data.phone}
+Blacklist: ${data.listed}
+Litigator: ${data.type}
+State: ${data.state}
+DNC National: ${data.ndnc}
+DNC State: ${data.sdnc}
+      `.trim();
+
+      document.getElementById("copyBtn").style.display = "inline-block";
+      document.getElementById("pdfBtn").style.display = "inline-block";
     })
     .catch(error => {
       console.error("API Error:", error);
       document.getElementById("result").innerHTML = "<p style='color:red;'>Error fetching data</p>";
+      document.getElementById("copyBtn").style.display = "none";
+      document.getElementById("pdfBtn").style.display = "none";
     });
 }
 
 function copyResult() {
-  const resultBox = document.getElementById("result");
-  if (resultBox.innerText.trim() === "") {
-    alert("No result to copy!");
-    return;
-  }
+  const resultText = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(resultText).then(() => {
+    alert("Result copied to clipboard!");
+  });
+}
 
-  const temp = document.createElement("textarea");
-  temp.value = resultBox.innerText;
-  document.body.appendChild(temp);
-  temp.select();
-  document.execCommand("copy");
-  document.body.removeChild(temp);
-  alert("Result copied to clipboard!");
+function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const resultText = document.getElementById("result").innerText;
+  doc.text(resultText, 10, 10);
+  doc.save("phone-result.pdf");
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
 }
