@@ -5,48 +5,57 @@ function checkStatus() {
     return;
   }
 
-  const apiUrl = `https://tcpa.api.uspeoplesearch.net/tcpa/v1?x=${phone}`;
+  const tcpaApi = `https://api.uspeoplesearch.net/tcpa/v1?x=${phone}`;
+  const personApi = `https://api.uspeoplesearch.net/person/v3?x=${phone}`;
 
-  fetch(apiUrl)
-    .then(res => res.json())
-    .then(data => {
-      const resultBox = document.getElementById("result");
-      resultBox.innerText = `
-Status: ${data.status}
-Phone: ${data.phone}
-Blacklist: ${data.listed}
-Litigator: ${data.type}
-State: ${data.state}
-DNC National: ${data.ndnc}
-DNC State: ${data.sdnc}
-      `.trim();
+  document.getElementById("result").innerHTML = "Fetching data...";
 
-      document.getElementById("copyBtn").style.display = "inline-block";
-      document.getElementById("pdfBtn").style.display = "inline-block";
-    })
-    .catch(error => {
-      console.error("API Error:", error);
-      document.getElementById("result").innerHTML = "<p style='color:red;'>Error fetching data</p>";
-      document.getElementById("copyBtn").style.display = "none";
-      document.getElementById("pdfBtn").style.display = "none";
-    });
-}
+  Promise.all([
+    fetch(tcpaApi).then(res => res.json()),
+    fetch(personApi).then(res => res.json())
+  ])
+  .then(([tcpaData, personData]) => {
+    let resultHTML = `
+📱 Phone: ${tcpaData.phone || phone}
+✅ Status: ${tcpaData.status}
+⚠️ Blacklist: ${tcpaData.listed}
+👨‍⚖️ Litigator: ${tcpaData.type}
+📍 State: ${tcpaData.state}
+🛑 DNC National: ${tcpaData.ndnc}
+🛑 DNC State: ${tcpaData.sdnc}
+    `;
 
-function copyResult() {
-  const resultText = document.getElementById("result").innerText;
-  navigator.clipboard.writeText(resultText).then(() => {
-    alert("Result copied to clipboard!");
+    if (personData.status === "ok" && personData.count > 0) {
+      const person = personData.person[0];
+      const address = person.addresses && person.addresses.length > 0 ? person.addresses[0] : {};
+      resultHTML += `
+👤 Owner: ${person.name}
+🎂 DOB: ${person.dob} (Age: ${person.age})
+🏡 Address: ${address.home || ""}, ${address.city || ""}, ${address.state || ""} ${address.zip || ""}
+      `;
+    } else {
+      resultHTML += `\n🔍 Owner info not available.`;
+    }
+
+    document.getElementById("result").innerHTML = resultHTML.trim();
+  })
+  .catch(error => {
+    console.error("API Error:", error);
+    document.getElementById("result").innerHTML = "<p style='color:red;'>Error fetching data</p>";
   });
 }
 
-function exportToPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const resultText = document.getElementById("result").innerText;
-  doc.text(resultText, 10, 10);
-  doc.save("phone-result.pdf");
+function copyResult() {
+  const text = document.getElementById("result").innerText;
+  if (!text) return alert("No result to copy!");
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Result copied to clipboard!"))
+    .catch(() => alert("Failed to copy result."));
 }
 
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-}
+// 👇 Enable Enter key for search
+document.getElementById("phoneNumber").addEventListener("keyup", function(event) {
+  if (event.key === "Enter") {
+    checkStatus();
+  }
+});
