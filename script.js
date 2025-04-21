@@ -10,20 +10,43 @@ function checkStatus() {
   fetch(apiUrl)
     .then(res => res.json())
     .then(data => {
-      console.log("Full API Response:", data); // Debugging
+      const resultBox = document.getElementById("result");
+      resultBox.innerText = `
+Status: ${data.status}
+Phone: ${data.phone}
+Blacklist: ${data.listed}
+Litigator: ${data.type}
+State: ${data.state}
+DNC National: ${data.ndnc}
+DNC State: ${data.sdnc}
+      `.trim();
 
-      document.getElementById("result").innerHTML = `
-        <p><strong>Status:</strong> ${data.status}</p>
-        <p><strong>Phone:</strong> ${data.phone}</p>
-        <p><strong>Blacklist:</strong> ${data.listed}</p>
-        <p><strong>Litigator:</strong> ${data.type}</p>
-        <p><strong>State:</strong> ${data.state}</p>
-        <p><strong>DNC National:</strong> ${data.ndnc}</p>
-        <p><strong>DNC State:</strong> ${data.sdnc}</p>
-      `;
+      document.getElementById("copyBtn").style.display = "inline-block";
+      document.getElementById("pdfBtn").style.display = "inline-block";
     })
     .catch(error => {
       console.error("API Error:", error);
       document.getElementById("result").innerHTML = "<p style='color:red;'>Error fetching data</p>";
+      document.getElementById("copyBtn").style.display = "none";
+      document.getElementById("pdfBtn").style.display = "none";
     });
+}
+
+function copyResult() {
+  const resultText = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(resultText).then(() => {
+    alert("Result copied to clipboard!");
+  });
+}
+
+function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const resultText = document.getElementById("result").innerText;
+  doc.text(resultText, 10, 10);
+  doc.save("phone-result.pdf");
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
 }
