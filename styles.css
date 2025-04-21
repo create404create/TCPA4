@@ -1,39 +1,48 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #e96443, #904e95);
+  color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin: auto;
+  max-width: 400px;
+  margin: 80px auto;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
 }
 
 input {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 16px;
 }
 
 button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
+  background: #ffc107;
+  border: none;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 button:hover {
-    background: #0056b3;
+  background: #e0a800;
 }
 
-#result {
-    margin-top: 20px;
-    font-weight: bold;
-    text-align: left;
+.result-box {
+  margin-top: 25px;
+  padding: 20px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  text-align: left;
 }
