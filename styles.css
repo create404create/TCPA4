@@ -1,10 +1,11 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
   color: #fff;
   background-color: #000;
-  overflow: hidden;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
 .codex-bg {
@@ -13,25 +14,21 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://media.tenor.com/qJ5evVs-_uUAAAAC/coding.gif');
+  background-image: url('https://media.giphy.com/media/3o6ZsWbHkqgZHJzPwc/giphy.gif');
   background-size: cover;
-  opacity: 0.1;
+  opacity: 0.15;
   z-index: -1;
 }
 
 .container {
-  max-width: 400px;
+  max-width: 420px;
   margin: 100px auto;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
   text-align: center;
-  backdrop-filter: blur(5px);
-}
-
-h2 {
-  margin-bottom: 20px;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 input {
@@ -51,38 +48,108 @@ button {
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 10px;
+  transition: background 0.2s ease;
 }
 
 button:hover {
   background: #e0a800;
 }
 
-#copyBtn {
-  margin-top: 15px;
-  background: #17a2b8;
-  color: white;
-}
-
-#copyBtn:hover {
-  background: #138496;
-}
-
 .result-box {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
+  margin-top: 25px;
+  padding: 20px;
+  background-color: rgba(255,255,255,0.1);
   border-radius: 10px;
   text-align: left;
+  white-space: pre-wrap;
+  animation: fadeIn 0.5s ease;
 }
 
-.credit {
+.footer {
   margin-top: 25px;
   font-size: 14px;
   color: #ccc;
 }
 
-.credit a {
-  color: #00ffff;
-  text-decoration: none;
+.ehtisham {
+  font-family: 'Orbitron', sans-serif;
+  color: #0ff;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Dark Mode Toggle Switch */
+.switch {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #555;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark mode class */
+body.dark {
+  background-color: #111;
+  color: #f0f0f0;
+}
+
+body.dark .container {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+body.dark .result-box {
+  background-color: rgba(255,255,255,0.15);
 }
