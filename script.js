@@ -1,30 +1,29 @@
-async function checkStatus() {
-    const phone = document.getElementById("phoneNumber").value.trim();
-    if (!phone) {
-        alert("Please enter a valid USA number");
-        return;
-    }
+function checkStatus() {
+  const phone = document.getElementById("phoneNumber").value.trim();
+  if (!phone) {
+    alert("Please enter a phone number");
+    return;
+  }
 
-    const apiUrl = `https://tcpa.api.uspeoplesearch.net/tcpa/v1?x=${phone}`;
+  const apiUrl = `https://tcpa.api.uspeoplesearch.net/tcpa/v1?x=${phone}`;
 
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Full API Response:", data); // Debugging
 
-        console.log("API Response:", data); // Debugging ke liye
-
-        // Show response on the website
-        document.getElementById("result").innerHTML = `
-            <strong>Status:</strong> ${data.status || "Unknown"} <br>
-            <strong>Phone:</strong> ${data.phone || "N/A"} <br>
-            <strong>Blacklist:</strong> ${data.listed || "Not Available"} <br>
-            <strong>Litigator:</strong> ${data.type || "Not Available"} <br>
-            <strong>State:</strong> ${data.state || "Invalid"} <br>
-            <strong>DNC National:</strong> ${data.ndnc || "Not Available"} <br>
-            <strong>DNC State:</strong> ${data.sdnc || "Not Available"} <br>
-        `;
-    } catch (error) {
-        console.error("API Error:", error);
-        document.getElementById("result").innerHTML = "<p style='color: red;'>Error fetching data</p>";
-    }
+      document.getElementById("result").innerHTML = `
+        <p><strong>Status:</strong> ${data.status}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Blacklist:</strong> ${data.listed}</p>
+        <p><strong>Litigator:</strong> ${data.type}</p>
+        <p><strong>State:</strong> ${data.state}</p>
+        <p><strong>DNC National:</strong> ${data.ndnc}</p>
+        <p><strong>DNC State:</strong> ${data.sdnc}</p>
+      `;
+    })
+    .catch(error => {
+      console.error("API Error:", error);
+      document.getElementById("result").innerHTML = "<p style='color:red;'>Error fetching data</p>";
+    });
 }
