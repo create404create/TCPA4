@@ -47,13 +47,18 @@ function checkStatus() {
 
 function copyResult() {
   const text = document.getElementById("result").innerText;
+  const popup = document.getElementById("copy-popup");
   if (!text) return alert("No result to copy!");
   navigator.clipboard.writeText(text)
-    .then(() => alert("Result copied to clipboard!"))
+    .then(() => {
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 3000);
+    })
     .catch(() => alert("Failed to copy result."));
 }
 
-// 👇 Enable Enter key for search
 document.getElementById("phoneNumber").addEventListener("keyup", function(event) {
   if (event.key === "Enter") {
     checkStatus();
